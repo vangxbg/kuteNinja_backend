@@ -1,6 +1,9 @@
 <?php
 /** This handles the requests for heatbeat uri */
 
+// payload class for storing the heartbeat information
+class Payload{};
+
 // URI: /api/v1/heartBeat
 // Type: GET
 // Purpose: To check the status of the server
