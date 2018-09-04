@@ -1,0 +1,11 @@
+# Allows ModRewrite to work
+Options FollowSymLinks
+
+# Turn on rewrite engine
+RewriteEngine On
+
+# Redirect all requests to index
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-l
+RewriteRule . index.php

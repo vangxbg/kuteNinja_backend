@@ -1,0 +1,117 @@
+KuteNinja for Database and URI API
+****************************************************************************************************
+*************    REQUIREMENTS   ********************************************************************
+****************************************************************************************************
+
+PURPOSE: To store user profile data and game settings data to be use for online play and analysis.
+
+****************************************************************************************************
+DATABASE ACCEPTANCE:
+These does not map out the final design of the database. They should at least give some starting bases on where it needs to go.
+****************************************************************************************************
+User Table
+	{id} BigInt Primary Key AutoIncrement
+	{u_id} varChar(250) Not Null
+	{name} varChar (100)
+	{created_date} DateTime, Default Current_Timestamp
+	{house_id} BigInt Foreign Key to House Table, Not Null
+
+User Check In Table
+	{id} BigInt Primary Key AutoIncrement
+	{created_date} DateTime, Default Current_Timestamp
+	{ip} varChar (100)
+
+CharacterProfile Table
+	{id} BigInt Primary Key AutoIncrement
+	{u_id} varChar(250) Not Null
+	{user_id} BigInt Foreign Key to user Table, Not Null
+	{level} int
+	{exp} int
+	{created_date} DateTime, Default Current_Timestamp
+
+House Table
+	{id} BigInt Primary Key AutoIncrement
+	{user_id} BigInt Foreign Key to user Table, Not Null
+	{name} varChar (100)
+	{description} varChar (500)
+	{min_level} int
+	{cost_coin} int
+	{cost_ruby} int
+	{created_date} DateTime, Default Current_Timestamp
+
+Transaction Audit Table
+	{id} BigInt Primary key AutoIncrement
+	{created_date} DateTime Current_Timestamp
+	{network} varChar(500)
+	{user_id} BigInt, Foreign Key to User Table
+	{data} Text
+	{type} varChar(100)
+
+****************************************************************************************************
+API ACCEPTANCE:
+These URI and functions of the URI may not necessary be the final design.
+****************************************************************************************************
+You can use .htaccess for MOD_REWRITE to accept every URL to index.php. After that, you can write all of your logic to handle the endpoints.
+
+
+::1
+Endpoints
+URI: /api/v1/heartBeat
+Type: GET
+Purpose: To check the status of the server
+Payload: None
+Server Action: Get Current Date Time
+Return: string, Current Date Time in Seconds since epoch form.
+
+::2
+URI: /api/v1/user/checkin
+TYPE: POST
+Purpose: To update the user’s data when they go online.
+Payload: JSON string object that includes
+  {
+    type:*,
+    u_id:*
+  }
+Server Action:
+Insert new entry into User Check In table
+Insert raw data into the Transaction Audit table.
+Return: bool, empty
+
+::3
+URI: /api/v1/characterProfile/
+TYPE: POST
+Purpose: To update the user’s data when they go online.
+Payload: JSON string object that includes
+	{
+    type:*,
+    profile:{
+  		u_id:*,
+      level:*,
+      exp:*
+    }
+	}
+Server Action: Insert new entry into Character profile if the profile does not exist. If it does, then update the current entry.
+Insert raw data into the Transaction Audit table.
+Return: string, profile unique id if new entry was created.
+
+::4
+URI: /api/v1/house/
+TYPE: POST
+Purpose: To update the house data.
+Payload: JSON string object that includes
+	{
+    type:*,
+		u_id:*,
+    house:{
+  		u_id:*,
+      name:*,
+      description:*,
+      min_level:*,
+      cost_coin:*,
+      cost_ruby:*
+    }
+	}
+Server Action: Insert new entry into House Table if house does not exist. If it does, then update the current entry.
+Verify that the user exist before interaction with the database. If payload of house->u_id is null, then check if user can add a new house profile to the house table.
+Insert raw data into the Transaction Audit table.
+Return: string, house unique id if new entry was created.
