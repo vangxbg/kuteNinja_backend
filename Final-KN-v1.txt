@@ -1,0 +1,364 @@
+KuteNinja for Database and URI API
+****************************************************************************************************
+*************    REQUIREMENTS   ********************************************************************
+****************************************************************************************************
+
+PURPOSE: To store user profile data and game settings data to be use for online play and analysis.
+
+****************************************************************************************************
+DATABASE ACCEPTANCE:
+****************************************************************************************************
+Table Name: User_Account
+Description: To store the actual human player's account
+Schema:
+	{id} BigInt Primary Key AutoIncrement
+	{u_id} varChar(250) Not Null
+	{name} varChar (100)
+	{created_date} DateTime, Default Current_Timestamp
+  {last_updated} TimeStamp, Default Current_Timestamp
+	{house_id} BigInt Foreign Key to House Table, Not Null
+  {email} varChar(500)
+
+* Table Name: User_Check_In (NEED TO BE REMOVED)
+Description: Track a Player's online login connection every time they connect to the server.
+Schema:
+	{id} BigInt Primary Key AutoIncrement
+	{created_date} DateTime, Default Current_Timestamp
+	{ip} varChar (100)
+
+Table Name: Character_Profile
+Description: Keep each individual character's information.
+Schema:
+	{id} BigInt Primary Key AutoIncrement
+	{u_id} varChar(250) Not Null
+	{user_id} BigInt Foreign Key to user Table, Not Null
+  {active} tinyint default 0
+  {name} varChar(100)
+  {attack_multiply} int
+  {defense_multiply} int
+  {luck_multiply} int
+  {agility_multiply} int
+  {attack} int
+  {chase} int
+  {special} int
+  {jump} int
+  {projectile} int
+  {risk} int
+  {awareness} int
+  {distance} int
+  {star_throw} int
+  {gather_coins} int
+  {gather_rubies} int
+  {gahter_diamonds} int
+  {kills} int
+  {deaths} int
+	{level} int
+	{exp} int
+  {equipment_primary} BigInt FK Item_Class id
+  {equipment_scarf} BigInt FK Item_Class id
+  {equipment_headband} BigInt FK Item_Class id
+  {equipment_special} BigInt FK Item_Class id
+  {equipment_special2} BigInt FK Item_Class id
+  {equipment_special3} BigInt FK Item_Class id
+
+	{created_date} DateTime, Default Current_Timestamp
+	{last_updated} TimeStamp, Default Current_Timestamp
+
+Table Name: Item_Class
+Description: Holds information about every item in the entire game. This table is connected to Character_Profile table.
+Schema:
+  {id} BigInt Primary Key AutoIncrement
+  {character_profile_id} BigInt FK Character_Profile Table id
+  {value} int not null
+  {u_id} varChar(250) Not Null
+  {reference_id} int not null
+  {level} int
+  {level_required} int
+  {star} int
+  {upgrade_count} int
+  {attack} int
+  {attack_percentage} float/double
+  {critical_attack_percentage} float/double
+  {defense} int
+  {defense_percentage} float/double
+  {luck} int
+  {luck_percentage} float/double
+  {agility} int
+  {agility_percentage} float/double
+  {stamina} int
+  {stamina_percentage} float/double
+  {stamina_cost} int
+  {weight} int
+  {valued} bigInt FK Valued Table Id
+  {charm_poison} big_int FK Charm Table id
+
+Table Name: Charm
+Description: Holds each charm-able ability from item class. Table is connect to Item_Class table.
+Schema:
+  {id} bigInt
+  {value} float/double
+  {time} float/double
+  {interval} float/double
+  {percentage} FLOAT/double
+
+Table Name: Valued
+Description: Holds each Value base.
+Schema:
+  {id} bigInt
+  {coin} float/double
+  {ruby} float/double
+  {gold} float/double
+  {diamond} float/double
+
+House Table
+	{id} BigInt Primary Key AutoIncrement
+	{user_id} BigInt Foreign Key to user Table, Not Null
+	{name} varChar (100)
+	{description} varChar (500)
+	{min_level} int
+	{cost_coin} int
+	{cost_ruby} int
+	{created_date} DateTime, Default Current_Timestamp
+
+Transaction Audit Table
+	{id} BigInt Primary key AutoIncrement
+	{created_date} DateTime Current_Timestamp
+	{network} varChar(500)
+	{user_id} BigInt, Foreign Key to User Table
+	{data} Text
+	{type} varChar(100)
+
+****************************************************************************************************
+API ACCEPTANCE:
+****************************************************************************************************
+
+
+::1
+Endpoints
+URI: /api/v1/heartBeat
+Type: GET
+Purpose: To check the status of the server
+Payload: None
+Server Action: Get Current Date Time
+Return: string, Current Date Time in Seconds since epoch form.
+
+::2
+URI: /api/v1/user/checkin
+TYPE: POST
+Purpose: To update the user’s data when they go online.
+Payload: JSON string object that includes
+  {
+    account: {
+      "u_id": "bxiong",
+      "name": "Boon Xiong",
+      "email": "boonsxiong@gmail.com"
+    },
+    character_profile:[
+      {
+        u_id: "bxiongCP1",
+        active: true,
+        name: "CHARACTER-PROFILE#1",
+        attack_multiply: 1,
+        defense_multiply: 1,
+        luck_multiply: 1,
+        agility_multiply: 1,
+        attack: 1,
+        chase: 1,
+        special: 1,
+        jump: 1,
+        projectile: 1,
+        risk: 1,
+        awareness: 1,
+        distance: 1,
+        star_throw: 1,
+        gather_coins: 1,
+        gather_rubies: 1,
+        gather_diamonds: 1,
+        kills: 1,
+        deaths: 1,
+        level: 1,
+        exp: 1,
+        equipments:{
+          primary: {
+            value : 1,
+            u_id: "bxiong-primary-weapon1",
+            reference_id : 2,
+            level:1,
+            level_required:1,
+            star:3,
+            upgrade_count:0,
+            attack:1,
+            attack_percentage: 0.1,
+            critical_attack_percentage: 0.1,
+            defense : 1,
+            defense_percentage: 0.1,
+            luck: 1,
+            luck_percentage: 0.1,
+            agility:1,
+            agility_percentage: 0.1,
+            stamina:1,
+            stamina_percentage: 0.1,
+            stamina_cost: 1,
+            weight: 1,
+            valued: {
+              coin: 1,
+              ruby: 1,
+              diamond: 1
+            },
+            charm_poison:{
+              value: .1,
+              time: .1,
+              interval: .1
+              type: "poison"
+            },
+            charm_fire: Null,
+          },
+          scarf: {
+            value : 1,
+            u_id: "bxiong-primary-scarf",
+            reference_id : 2,
+            level:1,
+            level_required:1,
+            star:3,
+            upgrade_count:0,
+            attack:1,
+            attack_percentage: 0.1,
+            critical_attack_percentage: 0.1,
+            defense : 1,
+            defense_percentage: 0.1,
+            luck: 1,
+            luck_percentage: 0.1,
+            agility:1,
+            agility_percentage: 0.1,
+            stamina:1,
+            stamina_percentage: 0.1,
+            stamina_cost: 1,
+            weight: 1,
+            valued: {
+              coin: 1,
+              ruby: 1,
+              diamond: 1
+            }
+          },
+          headband: {
+            value : 1,
+            u_id: "bxiong-primary-headband",
+            reference_id : 2,
+            level:1,
+            level_required:1,
+            star:3,
+            upgrade_count:0,
+            attack:1,
+            attack_percentage: 0.1,
+            critical_attack_percentage: 0.1,
+            defense : 1,
+            defense_percentage: 0.1,
+            luck: 1,
+            luck_percentage: 0.1,
+            agility:1,
+            agility_percentage: 0.1,
+            stamina:1,
+            stamina_percentage: 0.1,
+            stamina_cost: 1,
+            weight: 1,
+            valued: {
+              coin: 1,
+              ruby: 1,
+              diamond: 1
+            }
+          },
+          special: {
+            value : 1,
+            u_id: "bxiong-primary-special",
+            reference_id : 2,
+            level:1,
+            level_required:1,
+            star:3,
+            upgrade_count:0,
+            attack:1,
+            attack_percentage: 0.1,
+            critical_attack_percentage: 0.1,
+            defense : 1,
+            defense_percentage: 0.1,
+            luck: 1,
+            luck_percentage: 0.1,
+            agility:1,
+            agility_percentage: 0.1,
+            stamina:1,
+            stamina_percentage: 0.1,
+            stamina_cost: 1,
+            weight: 1,
+            valued: {
+              coin: 1,
+              ruby: 1,
+              diamond: 1
+            }
+          },
+          special2: {
+            value : 1,
+            u_id: "bxiong-primary-special2",
+            reference_id : 2,
+            level:1,
+            level_required:1,
+            star:3,
+            upgrade_count:0,
+            attack:1,
+            attack_percentage: 0.1,
+            critical_attack_percentage: 0.1,
+            defense : 1,
+            defense_percentage: 0.1,
+            luck: 1,
+            luck_percentage: 0.1,
+            agility:1,
+            agility_percentage: 0.1,
+            stamina:1,
+            stamina_percentage: 0.1,
+            stamina_cost: 1,
+            weight: 1,
+            valued: {
+              coin: 1,
+              ruby: 1,
+              diamond: 1
+            }
+          },
+          special3: {
+            value : 1,
+            u_id: "bxiong-primary-special3",
+            reference_id : 2,
+            level:1,
+            level_required:1,
+            star:3,
+            upgrade_count:0,
+            attack:1,
+            attack_percentage: 0.1,
+            critical_attack_percentage: 0.1,
+            defense : 1,
+            defense_percentage: 0.1,
+            luck: 1,
+            luck_percentage: 0.1,
+            agility:1,
+            agility_percentage: 0.1,
+            stamina:1,
+            stamina_percentage: 0.1,
+            stamina_cost: 1,
+            weight: 1,
+            valued: {
+              coin: 1,
+              ruby: 1,
+              diamond: 1
+            }
+          }
+        }
+      }
+    ]
+  }
+Server Action:
+Insert/Update new entry to Player Account
+Insert/Update Character Profiles
+Insert new entry into User Check In table
+Insert raw data into the Transaction Audit table.
+Return:
+{
+  code: 200,
+  payload: true
+}

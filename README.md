@@ -4,7 +4,7 @@
 
 Project that handles data through the web for multiplayer experience for a game called kuteNinja using a RESTful API.
 
-This project was created by me to help with the completion of kuteNinja's server side development.  The code here is only for viewing purposes.
+This project was created by me to help with the completion of kuteNinja's server side development.  The code here is just a small sample of the project as it will be completed in a private repository.
 
 ### Quick explanation
 

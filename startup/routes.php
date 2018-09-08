@@ -10,8 +10,8 @@ require('./routes/house.php');
 // handle the GET requests
 if( strtolower($request) == "get"){
     switch ( $uri ){
-        case "/api/v1/heartBeat": 
-            echo "getting on /api/v1/heartBeat ";
+        case "/api/v1/heartbeat": 
+            echo "getting on /api/v1/heartbeat ";
             echo HeartBeat(); 
             break;
         default: break;
@@ -19,8 +19,8 @@ if( strtolower($request) == "get"){
 // handle the POST requests
 }else{
     switch ( $uri ){
-        case "/api/v1/characterProfile": 
-            echo "posting on /api/v1/characterProfile ";
+        case "/api/v1/characterprofile": 
+            echo "posting on /api/v1/characterprofile ";
             echo CharProfile($conn); 
             break;
         case "/api/v1/user/checkin":
