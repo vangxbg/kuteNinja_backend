@@ -12,7 +12,8 @@ This project was created by me to help with the completion of kuteNinja's server
 * startup folder contains the code required to start up the server such as connecting to the database, listening to a port, etc.
 * routes folder contains the implementation for handling all the requests on each uri
 
-### Running the program
+### Completed Code
+* See images in directory for structure of completed code
 
 ---
 
